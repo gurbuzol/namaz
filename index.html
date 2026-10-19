@@ -16,4 +16,329 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%230f172a'/><circle cx='256' cy='256' r='200' fill='%231e293b' stroke='%2338bdf8' stroke-width='8'/><path d='M256 100 L256 160 M220 180 Q256 130 292 180 L292 360 L220 360 Z' fill='%2310b981'/><path d='M200 360 L312 360 L312 380 L200 380 Z' fill='%2338bdf8'/><circle cx='256' cy='120' r='12' fill='%23fbbf24'/></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%230f172a'/><circle cx='256' cy='256' r='200' fill='%231e293b' stroke='%2338bdf8' stroke-width='8'/><path d='M256 100 L256 160 M220 180 Q256 130 292 180 L292 360 L220 360 Z' fill='%2310b981'/><path d='M200 360 L312 360 L312 380 L200 380 Z' fill='%2338bdf8'/><circle cx='256' cy='120' r='12' fill='%23fbbf24'/></svg>">
 
-    <!-- PWA Web App Manifest
+    <!-- PWA Web App Manifest (Data URI) -->
+    <link rel="manifest" href="data:application/manifest+json;utf8,{
+        %22name%22:%22Namaz%20Takip%20Uygulamas%C4%B1%22,
+        %22short_name%22:%22Namaz%20Takip%22,
+        %22start_url%22:%22./%22,
+        %22display%22:%22standalone%22,
+        %22background_color%22:%22%230f172a%22,
+        %22theme_color%22:%22%230f172a%22,
+        %22icons%22:[{%22src%22:%22data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%230f172a'/><circle cx='256' cy='256' r='200' fill='%231e293b' stroke='%2338bdf8' stroke-width='8'/><path d='M256 100 L256 160 M220 180 Q256 130 292 180 L292 360 L220 360 Z' fill='%2310b981'/><path d='M200 360 L312 360 L312 380 L200 380 Z' fill='%2338bdf8'/><circle cx='256' cy='120' r='12' fill='%23fbbf24'/></svg>%22,%22sizes%22:%22512x512%22,%22type%22:%22image/svg+xml%22}]
+    }">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .card-bg {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+        .btn-status {
+            transition: all 0.2s ease;
+        }
+        .btn-status:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12">
+
+    <!-- Üst Başlık & Aksiyonlar -->
+    <header class="card-bg sticky top-0 z-50 px-4 py-3 shadow-lg border-b border-slate-700">
+        <div class="max-w-xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                    <i class="fa-solid fa-kaaba"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-100 leading-tight">Namaz Takip</h1>
+                    <p class="text-xs text-slate-400">Kişisel Kaza & Eda Rehberi</p>
+                </div>
+            </div>
+            
+            <button onclick="handleBackupShare()" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-medium flex items-center space-x-1.5 border border-slate-600 transition">
+                <i class="fa-solid fa-share-nodes text-emerald-400"></i>
+                <span>Yedekle</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-xl mx-auto px-4 mt-4 space-y-4">
+
+        <!-- Özet Durum Kartı -->
+        <section class="card-bg rounded-2xl p-4 shadow-sm">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-pie text-emerald-400"></i> ÖZET DURUM
+                </h2>
+                <span id="kazaSummaryBadge" class="text-xs px-2.5 py-0.5 rounded-full font-medium bg-slate-800 text-slate-300 border border-slate-700">
+                    Hesaplanıyor...
+                </span>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                    <span class="block text-xs text-slate-400 mb-0.5">
+                        <i class="fa-solid fa-circle text-rose-500 text-[10px] mr-1"></i>Kaçırılan
+                    </span>
+                    <span id="totalKacirilan" class="text-lg font-bold text-rose-400">0</span>
+                </div>
+                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                    <span class="block text-xs text-slate-400 mb-0.5">
+                        <i class="fa-solid fa-circle text-amber-500 text-[10px] mr-1"></i>Kaza Eda
+                    </span>
+                    <span id="totalKazaEda" class="text-lg font-bold text-amber-400">0</span>
+                </div>
+                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                    <span class="block text-xs text-slate-400 mb-0.5">
+                        <i class="fa-solid fa-circle text-emerald-500 text-[10px] mr-1"></i>Vaktinde
+                    </span>
+                    <span id="totalVaktinde" class="text-lg font-bold text-emerald-400">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tarih Gezinme Barı -->
+        <section class="card-bg rounded-2xl p-3 flex items-center justify-between shadow-sm">
+            <button onclick="changeDate(-1)" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm flex items-center space-x-1 border border-slate-700">
+                <i class="fa-solid fa-chevron-left text-xs"></i>
+                <span>Önceki</span>
+            </button>
+            
+            <div class="text-center">
+                <div id="currentDateDisplay" class="font-bold text-base text-slate-100">--.--.----</div>
+                <div id="currentDayDisplay" class="text-xs font-medium text-emerald-400 mt-0.5">Bugün</div>
+            </div>
+
+            <button onclick="changeDate(1)" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm flex items-center space-x-1 border border-slate-700">
+                <span>Sonraki</span>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+        </section>
+
+        <!-- Vakit Kartları Listesi -->
+        <section id="vakitlerContainer" class="space-y-3">
+            <!-- JavaScript ile dinamik dolacak -->
+        </section>
+
+    </main>
+
+    <!-- Gizli Dosya Yükleme Girdisi -->
+    <input type="file" id="importInput" accept=".json" class="hidden" onchange="importData(event)">
+
+    <script>
+        const VAKITLER = [
+            { id: 'sabah', label: 'Sabah', icon: 'fa-sun' },
+            { id: 'ogle', label: 'Öğle', icon: 'fa-sun' },
+            { id: 'ikindi', label: 'İkindi', icon: 'fa-cloud-sun' },
+            { id: 'aksam', label: 'Akşam', icon: 'fa-moon' },
+            { id: 'yatsi', label: 'Yatsı', icon: 'fa-stars' }
+        ];
+
+        const STATUSES = [
+            { id: 'gelecek', label: 'Gelecek', color: 'bg-slate-800 text-slate-400 border-slate-700' },
+            { id: 'vaktinde', label: 'Eda', color: 'bg-emerald-600 text-white border-emerald-500' },
+            { id: 'kacirildi', label: 'Kaza', color: 'bg-rose-600 text-white border-rose-500' },
+            { id: 'kaza_edildi', label: 'Kaza Eda', color: 'bg-amber-600 text-white border-amber-500' }
+        ];
+
+        let currentDate = new Date();
+        let appData = JSON.parse(localStorage.getItem('namaz_takip_data')) || {};
+
+        function formatDateKey(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function formatDateDisplay(date) {
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const y = date.getFullYear();
+            return `${d}.${m}.${y}`;
+        }
+
+        function getDayName(date) {
+            const today = new Date();
+            if (date.toDateString() === today.toDateString()) return 'Bugün';
+            
+            const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+            return days[date.getDay()];
+        }
+
+        function renderUI() {
+            const dateKey = formatDateKey(currentDate);
+            document.getElementById('currentDateDisplay').innerText = formatDateDisplay(currentDate);
+            document.getElementById('currentDayDisplay').innerText = getDayName(currentDate);
+
+            if (!appData[dateKey]) {
+                appData[dateKey] = {
+                    sabah: 'gelecek',
+                    ogle: 'gelecek',
+                    ikindi: 'gelecek',
+                    aksam: 'gelecek',
+                    yatsi: 'gelecek'
+                };
+            }
+
+            const container = document.getElementById('vakitlerContainer');
+            container.innerHTML = '';
+
+            VAKITLER.forEach(vakit => {
+                const currentStatus = appData[dateKey][vakit.id] || 'gelecek';
+
+                const card = document.createElement('div');
+                card.className = 'card-bg rounded-2xl p-3.5 shadow-sm space-y-2.5';
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
+                        <span class="font-bold text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid ${vakit.icon} text-emerald-400 text-xs"></i>
+                            ${vakit.label}
+                        </span>
+                        <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 border border-slate-700">
+                            ${getStatusLabel(currentStatus)}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-1.5">
+                        ${STATUSES.map(st => `
+                            <button onclick="setStatus('${vakit.id}', '${st.id}')" 
+                                class="btn-status text-xs font-medium py-2 rounded-xl border flex items-center justify-center gap-1 ${currentStatus === st.id ? st.color : 'bg-slate-900/50 text-slate-400 border-slate-800 hover:bg-slate-800'}">
+                                <i class="fa-solid ${getStatusIcon(st.id)} text-[10px]"></i>
+                                <span>${st.label}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            calculateSummary();
+            saveToStorage();
+        }
+
+        function getStatusLabel(id) {
+            if (id === 'vaktinde') return 'Eda Edildi';
+            if (id === 'kacirildi') return 'Kaza Kalındı';
+            if (id === 'kaza_edildi') return 'Kaza Edildi';
+            return 'Zamanı Gelmedi';
+        }
+
+        function getStatusIcon(id) {
+            if (id === 'vaktinde') return 'fa-check';
+            if (id === 'kacirildi') return 'fa-xmark';
+            if (id === 'kaza_edildi') return 'fa-rotate-left';
+            return 'fa-clock';
+        }
+
+        function setStatus(vakitId, statusId) {
+            const dateKey = formatDateKey(currentDate);
+            appData[dateKey][vakitId] = statusId;
+            renderUI();
+        }
+
+        function changeDate(days) {
+            currentDate.setDate(currentDate.getDate() + days);
+            renderUI();
+        }
+
+        function calculateSummary() {
+            let kacirilan = 0;
+            let kazaEdilen = 0;
+            let vaktinde = 0;
+
+            Object.values(appData).forEach(day => {
+                Object.values(day).forEach(st => {
+                    if (st === 'kacirildi') kacirilan++;
+                    if (st === 'kaza_edildi') kazaEdilen++;
+                    if (st === 'vaktinde') vaktinde++;
+                });
+            });
+
+            document.getElementById('totalKacirilan').innerText = kacirilan;
+            document.getElementById('totalKazaEda').innerText = kazaEdilen;
+            document.getElementById('totalVaktinde').innerText = vaktinde;
+
+            const netKaza = kacirilan - kazaEdilen;
+            const badge = document.getElementById('kazaSummaryBadge');
+
+            if (netKaza > 0) {
+                badge.innerText = `${netKaza} Vakit Kaza Borcu`;
+                badge.className = 'text-xs px-2.5 py-0.5 rounded-full font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30';
+            } else {
+                badge.innerText = 'Kaza Borcu Yok 👍';
+                badge.className = 'text-xs px-2.5 py-0.5 rounded-full font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('namaz_takip_data', JSON.stringify(appData));
+        }
+
+        async function handleBackupShare() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const fileName = `namaz_takip_yedek_${formatDateKey(new Date())}.json`;
+            const file = new File([dataStr], fileName, { type: 'application/json' });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        title: 'Namaz Takip Yedeği',
+                        text: 'Namaz takip uygulaması güncel veri yedeği.',
+                        files: [file]
+                    });
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        downloadBackupFile(dataStr, fileName);
+                    }
+                }
+            } else {
+                downloadBackupFile(dataStr, fileName);
+            }
+        }
+
+        function downloadBackupFile(content, fileName) {
+            const blob = new Blob([content], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (typeof imported === 'object') {
+                        appData = { ...appData, ...imported };
+                        saveToStorage();
+                        renderUI();
+                        alert('Yedek başarıyla yüklendi!');
+                    }
+                } catch (err) {
+                    alert('Hatalı dosya formatı!');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // İlk Yükleme
+        renderUI();
+    </script>
+</body>
+</html>
