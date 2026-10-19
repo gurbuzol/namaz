@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Namaz Takip Uygulaması</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#16a34a',
+                            600: '#15803d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-touch {
+            min-height: 42px;
+        }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-white text-xs">
+
+    <!-- Üst Bar / Header -->
+    <header class="bg-[#1e293b]/90 backdrop-blur-md border-b border-slate-700/60 sticky top-0 z-50">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg border border-emerald-500/20 shadow-inner">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base text-slate-100 leading-none">Namaz Takip</h1>
+                    <p class="text-[11px] text-slate-400 leading-tight mt-1">Kişisel Kaza & Eda Rehberi</p>
+                </div>
+            </div>
+            <button id="exportImportBtn" onclick="toggleBackupModal()" class="text-slate-300 hover:text-white px-3.5 py-2 rounded-xl bg-slate-700/60 hover:bg-slate-700 text-xs flex items-center gap-2 border border-slate-600/60 transition-all active:scale-95 shadow-sm">
+                <i class="fa-solid fa-arrows-rotate text-xs text-emerald-400"></i>
+                <span class="font-medium">Yedekle</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Ana İçerik Alanı -->
+    <main class="max-w-md mx-auto w-full px-4 py-3.5 flex-1 space-y-3.5">
+
+        <!-- Kompakt & Rahat Genel Durum Sayacı -->
+        <section class="bg-[#1e293b] rounded-2xl p-3.5 border border-slate-700/70 shadow-md space-y-2.5">
+            <div class="flex items-center justify-between border-b border-slate-700/50 pb-2.5">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-pie text-emerald-400 text-xs"></i> ÖZET DURUM
+                </span>
+                <span id="netDeficitBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-700 text-slate-300 border border-slate-600 font-medium">
+                    Kaza Borcu Yok 👍
+                </span>
+            </div>
+
+            <!-- Tek Satır Rahat Sayaçlar -->
+            <div class="grid grid-cols-3 gap-2.5 text-center pt-0.5">
+                <div class="bg-[#0f172a]/80 rounded-xl py-2 px-1 border border-slate-700/40 flex items-center justify-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 shrink-0"></span>
+                    <span class="text-sm font-black text-red-400" id="totalMissedCount">0</span>
+                    <span class="text-xs text-slate-400 font-medium">Kaçırılan</span>
+                </div>
+                <div class="bg-[#0f172a]/80 rounded-xl py-2 px-1 border border-slate-700/40 flex items-center justify-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0"></span>
+                    <span class="text-sm font-black text-amber-400" id="totalKazaPaidCount">0</span>
+                    <span class="text-xs text-slate-400 font-medium">Kaza Eda</span>
+                </div>
+                <div class="bg-[#0f172a]/80 rounded-xl py-2 px-1 border border-slate-700/40 flex items-center justify-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0"></span>
+                    <span class="text-sm font-black text-emerald-400" id="totalOnTimeCount">0</span>
+                    <span class="text-xs text-slate-400 font-medium">Vaktinde</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tarih Seçici Ve Gezinme Barı (Gün İsmi Dahil) -->
+        <section class="bg-[#1e293b] rounded-2xl px-3.5 py-2.5 border border-slate-700/70 flex items-center justify-between gap-2 shadow-sm">
+            <button onclick="changeDate(-1)" class="btn-touch px-3.5 py-2 rounded-xl bg-slate-700/60 text-slate-200 hover:bg-slate-700 active:scale-95 transition-all flex items-center gap-1.5 text-xs font-medium border border-slate-600/40">
+                <i class="fa-solid fa-chevron-left text-[10px]"></i> Önceki
+            </button>
+            
+            <div class="flex flex-col items-center leading-none relative">
+                <label for="datePicker" class="flex items-center gap-1.5 cursor-pointer py-0.5">
+                    <span id="dateDisplay" class="text-xs sm:text-sm font-bold text-slate-100">--.--.----</span>
+                    <i class="fa-regular fa-calendar text-xs text-slate-400"></i>
+                </label>
+                <input type="date" id="datePicker" onchange="onDateSelected(this.value)" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer">
+                <span id="dateSubtitle" class="text-[10px] text-emerald-400 font-medium mt-1">Bugün</span>
+            </div>
+
+            <button onclick="changeDate(1)" class="btn-touch px-3.5 py-2 rounded-xl bg-slate-700/60 text-slate-200 hover:bg-slate-700 active:scale-95 transition-all flex items-center gap-1.5 text-xs font-medium border border-slate-600/40">
+                Sonraki <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+        </section>
+
+        <!-- Namaz Vakitleri Liste Paneli -->
+        <section class="space-y-3" id="prayersListContainer">
+            <!-- JavaScript ile Dinamik Oluşturulacak -->
+        </section>
+
+    </main>
+
+    <!-- Alt Bilgi / Footer -->
+    <footer class="max-w-md mx-auto w-full px-4 py-3 text-center text-xs text-slate-500 border-t border-slate-800/80 mt-2">
+        <p>Tamamen ücretsiz & çevrimdışı (offline) çalışır.</p>
+    </footer>
+
+    <!-- Modal: Veri Yedekleme / İçeri Aktarma -->
+    <div id="backupModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#1e293b] border border-slate-700 rounded-2xl w-full max-w-sm p-4 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-200 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-database text-emerald-400"></i> Yedekleme & Paylaşım
+                </h3>
+                <button onclick="toggleBackupModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-300 leading-relaxed">
+                Yedeğinizi telefonunuzun paylaşım menüsü üzerinden kendinize e-posta gönderebilir veya dosya olarak kaydedebilirsiniz.
+            </p>
+
+            <div class="space-y-2.5">
+                <button onclick="shareBackupData()" class="w-full py-3 px-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl text-xs flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md">
+                    <i class="fa-solid fa-share-nodes text-sm"></i> Yedeği Paylaş / Mail At
+                </button>
+                <button onclick="importDataFromFile()" class="w-full py-2.5 px-3.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium rounded-xl text-xs flex items-center justify-center gap-2 active:scale-95 transition-all">
+                    <i class="fa-solid fa-upload"></i> Yedek Dosyası Yükle
+                </button>
+                <input type="file" id="fileInput" accept=".json" onchange="handleFileSelect(event)" class="hidden">
+            </div>
+
+            <div class="pt-2 border-t border-slate-700/60">
+                <button onclick="resetData()" class="w-full py-2 px-3 bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30 font-medium rounded-xl text-xs">
+                    Tüm Verileri Sıfırla
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Bildirim Kutusu -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-700 text-white text-xs px-4 py-2.5 rounded-xl shadow-xl border border-slate-600 hidden z-50 flex items-center gap-2 transition-all">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMsg">İşlem başarılı</span>
+    </div>
+
+    <!-- Uygulama Mantığı -->
+    <script>
+        const PRAYERS = ['Sabah', 'Öğle', 'İkindi', 'Akşam', 'Yatsı'];
+        
+        const STATES = {
+            UPCOMING: { id: 'UPCOMING', label: 'Zamanı Gelmedi', badgeBg: 'bg-slate-700 text-slate-300 border border-slate-600' },
+            ONTIME:   { id: 'ONTIME',   label: 'Vaktinde Kılındı', badgeBg: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' },
+            MISSED:   { id: 'MISSED',   label: 'Kazaya Kaldı',     badgeBg: 'bg-red-500/20 text-red-300 border border-red-500/40' },
+            KAZA_PAID:{ id: 'KAZA_PAID',label: 'Kaza Eda Edildi', badgeBg: 'bg-amber-400/20 text-amber-300 border border-amber-400/40' }
+        };
+
+        const DAYS_TR = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+
+        let selectedDate = new Date().toISOString().split('T')[0];
+        let db = { records: {} };
+
+        window.onload = function() {
+            loadFromLocalStorage();
+            document.getElementById('datePicker').value = selectedDate;
+            renderApp();
+        };
+
+        function loadFromLocalStorage() {
+            try {
+                const stored = localStorage.getItem('namaz_takip_db');
+                if (stored) {
+                    db = JSON.parse(stored);
+                }
+            } catch (e) {
+                console.error("Veri okuma hatası:", e);
+            }
+        }
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('namaz_takip_db', JSON.stringify(db));
+                updateTotals();
+            } catch (e) {
+                console.error("Veri kaydetme hatası:", e);
+            }
+        }
+
+        function changeDate(days) {
+            let [y, m, d] = selectedDate.split('-').map(Number);
+            let current = new Date(y, m - 1, d);
+            current.setDate(current.getDate() + days);
+            
+            const year = current.getFullYear();
+            const month = String(current.getMonth() + 1).padStart(2, '0');
+            const day = String(current.getDate()).padStart(2, '0');
+            
+            selectedDate = `${year}-${month}-${day}`;
+            document.getElementById('datePicker').value = selectedDate;
+            renderApp();
+        }
+
+        function onDateSelected(val) {
+            if (!val) return;
+            selectedDate = val;
+            renderApp();
+        }
+
+        function setPrayerState(prayer, stateId) {
+            if (!db.records[selectedDate]) {
+                db.records[selectedDate] = {};
+            }
+            db.records[selectedDate][prayer] = stateId;
+            saveToLocalStorage();
+            renderApp();
+        }
+
+        function updateTotals() {
+            let totalMissed = 0;   
+            let totalKazaPaid = 0; 
+            let totalOnTime = 0;   
+
+            Object.keys(db.records).forEach(date => {
+                const dayObj = db.records[date];
+                PRAYERS.forEach(p => {
+                    const st = dayObj[p];
+                    if (st === 'MISSED') totalMissed++;
+                    if (st === 'KAZA_PAID') totalKazaPaid++;
+                    if (st === 'ONTIME') totalOnTime++;
+                });
+            });
+
+            document.getElementById('totalMissedCount').innerText = totalMissed;
+            document.getElementById('totalKazaPaidCount').innerText = totalKazaPaid;
+            document.getElementById('totalOnTimeCount').innerText = totalOnTime;
+
+            const netDeficit = totalMissed - totalKazaPaid;
+            const badge = document.getElementById('netDeficitBadge');
+            
+            if (netDeficit > 0) {
+                badge.innerText = `${netDeficit} Kaza Borcu Var`;
+                badge.className = "text-xs px-2.5 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30 font-medium";
+            } else if (netDeficit < 0) {
+                badge.innerText = `${Math.abs(netDeficit)} Fazla Kaza Kılındı`;
+                badge.className = "text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium";
+            } else {
+                badge.innerText = `Kaza Borcu Yok 👍`;
+                badge.className = "text-xs px-2.5 py-1 rounded-full bg-slate-700 text-slate-300 border border-slate-600 font-medium";
+            }
+        }
+
+        function formatDateWithDay(dateStr) {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const dateObj = new Date(y, m - 1, d);
+            const dayName = DAYS_TR[dateObj.getDay()];
+            const formattedDay = String(d).padStart(2, '0');
+            const formattedMonth = String(m).padStart(2, '0');
+            return `${formattedDay}.${formattedMonth}.${y} ${dayName}`;
+        }
+
+        function renderApp() {
+            const now = new Date();
+            const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            
+            const dateDisplay = document.getElementById('dateDisplay');
+            const dateSubtitle = document.getElementById('dateSubtitle');
+            
+            dateDisplay.innerText = formatDateWithDay(selectedDate);
+
+            if (selectedDate === todayStr) {
+                dateSubtitle.innerText = 'Bugün';
+            } else {
+                dateSubtitle.innerText = selectedDate;
+            }
+
+            const container = document.getElementById('prayersListContainer');
+            container.innerHTML = '';
+
+            const dayRecord = db.records[selectedDate] || {};
+
+            PRAYERS.forEach(prayer => {
+                const currentStateKey = dayRecord[prayer] || 'UPCOMING';
+                const stateObj = STATES[currentStateKey];
+
+                const card = document.createElement('div');
+                card.className = "bg-[#1e293b] rounded-2xl p-3 border border-slate-700/60 shadow-sm flex flex-col gap-2.5";
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between px-1">
+                        <div class="flex items-center gap-1.5">
+                            <i class="fa-solid fa-moon text-slate-400 text-xs"></i>
+                            <span class="font-bold text-slate-100 text-xs sm:text-sm">${prayer}</span>
+                        </div>
+                        <span class="text-[10px] sm:text-xs px-2.5 py-0.5 rounded-md font-medium ${stateObj.badgeBg}">
+                            ${stateObj.label}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-1.5">
+                        <button onclick="setPrayerState('${prayer}', 'UPCOMING')" 
+                            class="py-2 px-1 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1 border active:scale-95 ${currentStateKey === 'UPCOMING' ? 'bg-slate-700 text-slate-100 border-slate-500 font-bold shadow-sm' : 'bg-[#0f172a]/60 text-slate-400 border-slate-700/60 hover:bg-slate-700/40'}">
+                            <span class="w-2 h-2 rounded-full bg-slate-400 inline-block shrink-0"></span>
+                            <span>Gelecek</span>
+                        </button>
+
+                        <button onclick="setPrayerState('${prayer}', 'ONTIME')" 
+                            class="py-2 px-1 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1 border active:scale-95 ${currentStateKey === 'ONTIME' ? 'bg-emerald-600 text-white border-emerald-500 font-bold shadow-sm' : 'bg-[#0f172a]/60 text-slate-400 border-slate-700/60 hover:bg-slate-700/40'}">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block shrink-0"></span>
+                            <span>Eda</span>
+                        </button>
+
+                        <button onclick="setPrayerState('${prayer}', 'MISSED')" 
+                            class="py-2 px-1 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1 border active:scale-95 ${currentStateKey === 'MISSED' ? 'bg-red-600 text-white border-red-500 font-bold shadow-sm' : 'bg-[#0f172a]/60 text-slate-400 border-slate-700/60 hover:bg-slate-700/40'}">
+                            <span class="w-2 h-2 rounded-full bg-red-400 inline-block shrink-0"></span>
+                            <span>Kaza</span>
+                        </button>
+
+                        <button onclick="setPrayerState('${prayer}', 'KAZA_PAID')" 
+                            class="py-2 px-1 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1 border active:scale-95 ${currentStateKey === 'KAZA_PAID' ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold shadow-sm' : 'bg-[#0f172a]/60 text-slate-400 border-slate-700/60 hover:bg-slate-700/40'}">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 inline-block shrink-0"></span>
+                            <span>Kaza Eda</span>
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            updateTotals();
+        }
+
+        function toggleBackupModal() {
+            const modal = document.getElementById('backupModal');
+            modal.classList.toggle('hidden');
+        }
+
+        async function shareBackupData() {
+            const jsonStr = JSON.stringify(db, null, 2);
+            const fileName = `namaz_takip_yedek_${selectedDate}.json`;
+            const file = new File([jsonStr], fileName, { type: 'application/json' });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        title: 'Namaz Takip Yedeği',
+                        text: 'Namaz Takip Uygulaması Veri Yedeği',
+                        files: [file]
+                    });
+                    showToast("Yedek paylaşım menüsüne aktarıldı");
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        fallbackDownload(jsonStr, fileName);
+                    }
+                }
+            } else {
+                fallbackDownload(jsonStr, fileName);
+            }
+        }
+
+        function fallbackDownload(content, filename) {
+            const blob = new Blob([content], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Yedek dosyası cihazınıza indirildi");
+        }
+
+        function importDataFromFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (parsed && typeof parsed === 'object' && parsed.records) {
+                        db = parsed;
+                        saveToLocalStorage();
+                        renderApp();
+                        toggleBackupModal();
+                        showToast("Yedek başarıyla yüklendi!");
+                    } else {
+                        alert("Geçersiz yedek dosyası formatı.");
+                    }
+                } catch (err) {
+                    alert("Dosya okunamadı. Geçerli bir JSON yedek dosyası seçtiğinizden emin olun.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetData() {
+            if (confirm("Tüm namaz kayıtlarınız silinecek. Emin misiniz?")) {
+                db = { records: {} };
+                saveToLocalStorage();
+                renderApp();
+                toggleBackupModal();
+                showToast("Tüm veriler sıfırlandı.");
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
