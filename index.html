@@ -2,137 +2,135 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Namaz Takip Uygulaması</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Namaz Takip</title>
+
     <!-- PWA & Mobil Ana Ekran Uygulama Ayarları -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Namaz Takip">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#0b0f19">
 
-    <!-- Özel Birebir İkon Entegrasyonu (Altın Hilal & Minare) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%230f172a'/><stop offset='100%' stop-color='%231e293b'/></linearGradient><linearGradient id='gold' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23fbbf24'/><stop offset='100%' stop-color='%23d97706'/></linearGradient></defs><rect width='512' height='512' rx='110' fill='url(%23bg)'/><path d='M 412.8 303 C 354 416.7 207 458 93.3 399.2 C 55.4 379.6 25.1 347.8 8 308 C 45 423 162.8 491.5 277.8 454.5 C 372.4 424.1 437.5 337.8 440 238 C 435.5 262 426.3 283.8 412.8 303 Z' fill='url(%23gold)'/><path d='M 195 330 C 205 270 250 220 310 205 C 370 190 430 215 460 268 C 390 390 235 435 110 365 C 145 360 175 348 195 330 Z' fill='%23ffffff'/><path d='M 256 220 C 285 220 308 238 316 264 L 196 264 C 204 238 227 220 256 220 Z' fill='%23ffffff'/><rect x='248' y='180' width='16' height='30' rx='4' fill='%23ffffff'/><path d='M 305 66 C 265 66 235 96 235 136 C 235 152 240 166 250 176 C 240 162 238 142 246 126 C 258 102 286 92 310 104 C 322 110 330 120 334 132 C 330 94 318 66 305 66 Z' fill='url(%23gold)'/></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%230f172a'/><stop offset='100%' stop-color='%231e293b'/></linearGradient><linearGradient id='gold' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23fbbf24'/><stop offset='100%' stop-color='%23d97706'/></linearGradient></defs><rect width='512' height='512' rx='110' fill='url(%23bg)'/><path d='M 412.8 303 C 354 416.7 207 458 93.3 399.2 C 55.4 379.6 25.1 347.8 8 308 C 45 423 162.8 491.5 277.8 454.5 C 372.4 424.1 437.5 337.8 440 238 C 435.5 262 426.3 283.8 412.8 303 Z' fill='url(%23gold)'/><path d='M 195 330 C 205 270 250 220 310 205 C 370 190 430 215 460 268 C 390 390 235 435 110 365 C 145 360 175 348 195 330 Z' fill='%23ffffff'/><path d='M 256 220 C 285 220 308 238 316 264 L 196 264 C 204 238 227 220 256 220 Z' fill='%23ffffff'/><rect x='248' y='180' width='16' height='30' rx='4' fill='%23ffffff'/><path d='M 305 66 C 265 66 235 96 235 136 C 235 152 240 166 250 176 C 240 162 238 142 246 126 C 258 102 286 92 310 104 C 322 110 330 120 334 132 C 330 94 318 66 305 66 Z' fill='url(%23gold)'/></svg>">
+    <!-- Özel Altın Hilalli İkon Entegrasyonu (Görselinizdeki Birebir Tasarım) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='gold' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23fbbf24'/><stop offset='100%' stop-color='%23d97706'/></linearGradient></defs><rect width='512' height='512' rx='110' fill='%230b0f19'/><path d='M 412.8 303 C 354 416.7 207 458 93.3 399.2 C 55.4 379.6 25.1 347.8 8 308 C 45 423 162.8 491.5 277.8 454.5 C 372.4 424.1 437.5 337.8 440 238 C 435.5 262 426.3 283.8 412.8 303 Z' fill='url(%23gold)'/><path d='M 195 330 C 205 270 250 220 310 205 C 370 190 430 215 460 268 C 390 390 235 435 110 365 C 145 360 175 348 195 330 Z' fill='%2310b981'/><path d='M 256 220 C 285 220 308 238 316 264 L 196 264 C 204 238 227 220 256 220 Z' fill='%2310b981'/><rect x='248' y='180' width='16' height='30' rx='4' fill='%2310b981'/><path d='M 305 66 C 265 66 235 96 235 136 C 235 152 240 166 250 176 C 240 162 238 142 246 126 C 258 102 286 92 310 104 C 322 110 330 120 334 132 C 330 94 318 66 305 66 Z' fill='url(%23gold)'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='gold' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23fbbf24'/><stop offset='100%' stop-color='%23d97706'/></linearGradient></defs><rect width='512' height='512' rx='110' fill='%230b0f19'/><path d='M 412.8 303 C 354 416.7 207 458 93.3 399.2 C 55.4 379.6 25.1 347.8 8 308 C 45 423 162.8 491.5 277.8 454.5 C 372.4 424.1 437.5 337.8 440 238 C 435.5 262 426.3 283.8 412.8 303 Z' fill='url(%23gold)'/><path d='M 195 330 C 205 270 250 220 310 205 C 370 190 430 215 460 268 C 390 390 235 435 110 365 C 145 360 175 348 195 330 Z' fill='%2310b981'/><path d='M 256 220 C 285 220 308 238 316 264 L 196 264 C 204 238 227 220 256 220 Z' fill='%2310b981'/><rect x='248' y='180' width='16' height='30' rx='4' fill='%2310b981'/><path d='M 305 66 C 265 66 235 96 235 136 C 235 152 240 166 250 176 C 240 162 238 142 246 126 C 258 102 286 92 310 104 C 322 110 330 120 334 132 C 330 94 318 66 305 66 Z' fill='url(%23gold)'/></svg>">
 
-    <!-- PWA Web App Manifest -->
+    <!-- PWA Manifest -->
     <link rel="manifest" href="data:application/manifest+json;utf8,{
-        %22name%22:%22Namaz%20Takip%20Uygulamas%C4%B1%22,
+        %22name%22:%22Namaz%20Takip%22,
         %22short_name%22:%22Namaz%20Takip%22,
         %22start_url%22:%22./%22,
         %22display%22:%22standalone%22,
-        %22background_color%22:%22%230f172a%22,
-        %22theme_color%22:%22%230f172a%22,
-        %22icons%22:[{%22src%22:%22data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%230f172a'/><stop offset='100%' stop-color='%231e293b'/></linearGradient><linearGradient id='gold' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23fbbf24'/><stop offset='100%' stop-color='%23d97706'/></linearGradient></defs><rect width='512' height='512' rx='110' fill='url(%23bg)'/><path d='M 412.8 303 C 354 416.7 207 458 93.3 399.2 C 55.4 379.6 25.1 347.8 8 308 C 45 423 162.8 491.5 277.8 454.5 Z' fill='url(%23gold)'/></svg>%22,%22sizes%22:%22512x512%22,%22type%22:%22image/svg+xml%22}]
+        %22background_color%22:%22%230b0f19%22,
+        %22theme_color%22:%22%230b0f19%22,
+        %22icons%22:[{%22src%22:%22data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='gold' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23fbbf24'/><stop offset='100%' stop-color='%23d97706'/></linearGradient></defs><rect width='512' height='512' rx='110' fill='%230b0f19'/><path d='M 412.8 303 C 354 416.7 207 458 93.3 399.2 C 55.4 379.6 25.1 347.8 8 308 C 45 423 162.8 491.5 277.8 454.5 Z' fill='url(%23gold)'/></svg>%22,%22sizes%22:%22512x512%22,%22type%22:%22image/svg+xml%22}]
     }">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .card-bg {
-            background-color: #1e293b;
-            border: 1px solid #334155;
+        .app-card {
+            background-color: #111827;
+            border: 1px solid #1f2937;
         }
         .btn-status {
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
         }
         .btn-status:active {
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
     </style>
 </head>
-<body class="min-h-screen pb-12">
+<body class="min-h-screen pb-8">
 
-    <!-- Üst Başlık & Aksiyonlar -->
-    <header class="card-bg sticky top-0 z-50 px-4 py-3 shadow-lg border-b border-slate-700">
-        <div class="max-w-xl mx-auto flex justify-between items-center">
+    <!-- Üst Bar -->
+    <header class="app-card sticky top-0 z-50 px-4 py-3 shadow-md border-b border-gray-800">
+        <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
                     <i class="fa-solid fa-kaaba"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold text-slate-100 leading-tight">Namaz Takip</h1>
-                    <p class="text-xs text-slate-400">Kişisel Kaza & Eda Rehberi</p>
+                    <h1 class="text-base font-bold text-gray-100 leading-tight">Namaz Takip</h1>
+                    <p class="text-[11px] text-gray-400">Kişisel Kaza & Eda Rehberi</p>
                 </div>
             </div>
             
-            <button onclick="handleBackupShare()" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-medium flex items-center space-x-1.5 border border-slate-600 transition">
+            <button onclick="handleBackupShare()" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium flex items-center space-x-1.5 border border-gray-700 transition">
                 <i class="fa-solid fa-rotate-left text-emerald-400"></i>
                 <span>Yedekle</span>
             </button>
         </div>
     </header>
 
-    <main class="max-w-xl mx-auto px-4 mt-4 space-y-4">
+    <main class="max-w-md mx-auto px-3.5 mt-3.5 space-y-3.5">
 
         <!-- Özet Durum Kartı -->
-        <section class="card-bg rounded-2xl p-4 shadow-sm">
-            <div class="flex justify-between items-center mb-3">
-                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+        <section class="app-card rounded-2xl p-3.5 shadow-sm">
+            <div class="flex justify-between items-center mb-2.5">
+                <h2 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
                     <i class="fa-solid fa-chart-pie text-emerald-400"></i> ÖZET DURUM
                 </h2>
-                <span id="kazaSummaryBadge" class="text-xs px-2.5 py-0.5 rounded-full font-medium bg-slate-800 text-slate-300 border border-slate-700">
+                <span id="kazaSummaryBadge" class="text-[11px] px-2.5 py-0.5 rounded-full font-medium bg-gray-800 text-gray-300 border border-gray-700">
                     Kaza Borcu Yok 👍
                 </span>
             </div>
             
             <div class="grid grid-cols-3 gap-2 text-center">
-                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
-                    <span class="block text-xs text-slate-400 mb-0.5">
-                        <i class="fa-solid fa-circle text-rose-500 text-[10px] mr-1"></i>0 Kaçırılan
+                <div class="bg-gray-900/80 p-2 rounded-xl border border-gray-800/80">
+                    <span class="block text-[11px] text-gray-400 mb-0.5">
+                        <i class="fa-solid fa-circle text-rose-500 text-[8px] mr-1"></i>Kaçırılan
                     </span>
-                    <span id="totalKacirilan" class="text-lg font-bold text-rose-400">0</span>
+                    <span id="totalKacirilan" class="text-base font-bold text-rose-400">0</span>
                 </div>
-                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
-                    <span class="block text-xs text-slate-400 mb-0.5">
-                        <i class="fa-solid fa-circle text-amber-500 text-[10px] mr-1"></i>0 Kaza Eda
+                <div class="bg-gray-900/80 p-2 rounded-xl border border-gray-800/80">
+                    <span class="block text-[11px] text-gray-400 mb-0.5">
+                        <i class="fa-solid fa-circle text-amber-500 text-[8px] mr-1"></i>Kaza Eda
                     </span>
-                    <span id="totalKazaEda" class="text-lg font-bold text-amber-400">0</span>
+                    <span id="totalKazaEda" class="text-base font-bold text-amber-400">0</span>
                 </div>
-                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
-                    <span class="block text-xs text-slate-400 mb-0.5">
-                        <i class="fa-solid fa-circle text-emerald-500 text-[10px] mr-1"></i>0 Vaktinde
+                <div class="bg-gray-900/80 p-2 rounded-xl border border-gray-800/80">
+                    <span class="block text-[11px] text-gray-400 mb-0.5">
+                        <i class="fa-solid fa-circle text-emerald-500 text-[8px] mr-1"></i>Vaktinde
                     </span>
-                    <span id="totalVaktinde" class="text-lg font-bold text-emerald-400">0</span>
+                    <span id="totalVaktinde" class="text-base font-bold text-emerald-400">0</span>
                 </div>
             </div>
         </section>
 
-        <!-- Tarih Gezinme Barı -->
-        <section class="card-bg rounded-2xl p-3 flex items-center justify-between shadow-sm">
-            <button onclick="changeDate(-1)" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm flex items-center space-x-1 border border-slate-700">
-                <i class="fa-solid fa-chevron-left text-xs"></i>
+        <!-- Tarih Gezinme Barı (Orijinal Gün Adı Gösterimi) -->
+        <section class="app-card rounded-2xl p-2.5 flex items-center justify-between shadow-sm">
+            <button onclick="changeDate(-1)" class="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs flex items-center space-x-1 border border-gray-700">
+                <i class="fa-solid fa-chevron-left text-[10px]"></i>
                 <span>Önceki</span>
             </button>
             
             <div class="text-center">
-                <div id="currentDateDisplay" class="font-bold text-base text-slate-100">--.--.----</div>
-                <div id="currentDayDisplay" class="text-xs font-medium text-emerald-400 mt-0.5">Bugün</div>
+                <div id="currentDateDisplay" class="font-bold text-sm text-gray-100">--.--.----</div>
+                <div id="currentDayDisplay" class="text-[11px] font-medium text-emerald-400 mt-0.5">Bugün</div>
             </div>
 
-            <button onclick="changeDate(1)" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm flex items-center space-x-1 border border-slate-700">
+            <button onclick="changeDate(1)" class="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs flex items-center space-x-1 border border-gray-700">
                 <span>Sonraki</span>
-                <i class="fa-solid fa-chevron-right text-xs"></i>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
             </button>
         </section>
 
         <!-- Vakit Kartları Listesi -->
         <section id="vakitlerContainer" class="space-y-3">
-            <!-- JavaScript ile orijinal renkli buton yapısı dolacak -->
+            <!-- JavaScript ile dinamik dolacak -->
         </section>
 
     </main>
-
-    <!-- Gizli Dosya Yükleme Girdisi -->
-    <input type="file" id="importInput" accept=".json" class="hidden" onchange="importData(event)">
 
     <script>
         const VAKITLER = [
@@ -140,14 +138,14 @@
             { id: 'ogle', label: 'Öğle', icon: 'fa-sun' },
             { id: 'ikindi', label: 'İkindi', icon: 'fa-cloud-sun' },
             { id: 'aksam', label: 'Akşam', icon: 'fa-moon' },
-            { id: 'yatsi', label: 'Yatsı', icon: 'fa-stars' }
+            { id: 'yatsi', label: 'Yatsı', icon: 'fa-star' }
         ];
 
         const STATUSES = [
-            { id: 'gelecek', label: 'Gelecek', color: 'bg-slate-700/80 text-slate-300 border-slate-600', dot: 'bg-slate-400' },
-            { id: 'vaktinde', label: 'Eda', color: 'bg-emerald-950/60 text-emerald-400 border-emerald-800/80', dot: 'bg-emerald-400' },
-            { id: 'kacirildi', label: 'Kaza', color: 'bg-rose-950/60 text-rose-400 border-rose-800/80', dot: 'bg-rose-500' },
-            { id: 'kaza_edildi', label: 'Kaza Eda', color: 'bg-amber-950/60 text-amber-400 border-amber-800/80', dot: 'bg-amber-400' }
+            { id: 'gelecek', label: 'Gelecek', color: 'bg-gray-800 text-gray-300 border-gray-700', dot: 'bg-gray-400' },
+            { id: 'vaktinde', label: 'Eda', color: 'bg-emerald-950/80 text-emerald-400 border-emerald-800', dot: 'bg-emerald-400' },
+            { id: 'kacirildi', label: 'Kaza', color: 'bg-rose-950/80 text-rose-400 border-rose-800', dot: 'bg-rose-500' },
+            { id: 'kaza_edildi', label: 'Kaza Eda', color: 'bg-amber-950/80 text-amber-400 border-amber-800', dot: 'bg-amber-400' }
         ];
 
         let currentDate = new Date();
@@ -168,11 +166,14 @@
         }
 
         function getDayName(date) {
-            const today = new Date();
-            if (date.toDateString() === today.toDateString()) return 'Bugün';
-            
             const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
-            return days[date.getDay()];
+            const dayName = days[date.getDay()];
+            
+            const today = new Date();
+            if (date.toDateString() === today.toDateString()) {
+                return `Bugün (${dayName})`;
+            }
+            return dayName;
         }
 
         function renderUI() {
@@ -197,23 +198,23 @@
                 const currentStatus = appData[dateKey][vakit.id] || 'gelecek';
 
                 const card = document.createElement('div');
-                card.className = 'card-bg rounded-2xl p-3.5 shadow-sm space-y-2.5';
+                card.className = 'app-card rounded-2xl p-3 shadow-sm space-y-2';
                 
                 card.innerHTML = `
-                    <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
-                        <span class="font-bold text-slate-200 flex items-center gap-2">
-                            <i class="fa-solid ${vakit.icon} text-slate-400 text-xs"></i>
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-1.5">
+                        <span class="font-bold text-xs text-gray-200 flex items-center gap-1.5">
+                            <i class="fa-solid ${vakit.icon} text-gray-400 text-xs"></i>
                             ${vakit.label}
                         </span>
-                        <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 border border-slate-700">
+                        <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-gray-900 text-gray-400 border border-gray-800">
                             Zamanı Gelmedi
                         </span>
                     </div>
                     <div class="grid grid-cols-4 gap-1.5">
                         ${STATUSES.map(st => `
                             <button onclick="setStatus('${vakit.id}', '${st.id}')" 
-                                class="btn-status text-xs font-medium py-2 rounded-xl border flex items-center justify-center gap-1.5 ${currentStatus === st.id ? st.color : 'bg-slate-900/40 text-slate-400 border-slate-800 hover:bg-slate-800'}">
-                                <span class="w-2 h-2 rounded-full ${st.dot}"></span>
+                                class="btn-status text-[11px] font-medium py-1.5 rounded-xl border flex items-center justify-center gap-1 ${currentStatus === st.id ? st.color : 'bg-gray-900/60 text-gray-400 border-gray-800/80 hover:bg-gray-800'}">
+                                <span class="w-1.5 h-1.5 rounded-full ${st.dot}"></span>
                                 <span>${st.label}</span>
                             </button>
                         `).join('')}
@@ -259,10 +260,10 @@
 
             if (netKaza > 0) {
                 badge.innerText = `${netKaza} Vakit Kaza Borcu`;
-                badge.className = 'text-xs px-2.5 py-0.5 rounded-full font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30';
+                badge.className = 'text-[11px] px-2.5 py-0.5 rounded-full font-medium bg-rose-500/10 text-rose-300 border border-rose-500/20';
             } else {
                 badge.innerText = 'Kaza Borcu Yok 👍';
-                badge.className = 'text-xs px-2.5 py-0.5 rounded-full font-medium bg-slate-800 text-slate-300 border border-slate-700';
+                badge.className = 'text-[11px] px-2.5 py-0.5 rounded-full font-medium bg-gray-800 text-gray-300 border border-gray-700';
             }
         }
 
@@ -300,27 +301,6 @@
             a.download = fileName;
             a.click();
             URL.revokeObjectURL(url);
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (typeof imported === 'object') {
-                        appData = { ...appData, ...imported };
-                        saveToStorage();
-                        renderUI();
-                        alert('Yedek başarıyla yüklendi!');
-                    }
-                } catch (err) {
-                    alert('Hatalı dosya formatı!');
-                }
-            };
-            reader.readAsText(file);
         }
 
         // İlk Yükleme
